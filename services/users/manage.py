@@ -1,11 +1,21 @@
 # services/users/manage.py
 
-import unittest 
+import unittest, coverage
 
 from flask.cli import FlaskGroup
 
 from project import create_app, db
 from project.api.models import User
+
+COV = coverage.coverage(
+	branch=True,
+	include='project/*',
+	omit=[
+		'project/tests/*',
+		'project/config.py',
+	]
+)
+COV.start()
 
 app = create_app()
 cli = FlaskGroup(create_app=create_app)
@@ -31,6 +41,24 @@ def seed_db():
 	db.session.add(User(username='dsroden', email='dsroden25@gmail.com'))
 	db.session.add(User(username='daniel', email='daniel@notreal.com'))
 	db.session.commit()
+
+@cli.command()
+def cov():
+	"""Runs the unit tests ith converage."""
+	tests = unittest.TestLoader().discover('project/tests')
+	result = unittest.TextTestRunner(verbosity=2).run(tests)
+	if result.wasSuccessful():
+		COV.stop()
+		COV.save()
+		print('Coverage Summary:')
+		COV.report()
+		COV.html_report()
+		COV.erase()
+		return 0
+	return 1
+
+
+
 
 if __name__ == '__main__':
 	cli()
