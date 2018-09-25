@@ -17,8 +17,10 @@ depends_on = ${repr(depends_on)}
 
 
 def upgrade():
-    ${upgrades if upgrades else "pass"}
-
+    # ${upgrades if upgrades else "pass"}
+    op.add_column('users', sa.Column('password', sa.String(length=255)))
+    op.execute('UPDATE users SET passowrd=email')
+    op.alter_column('users', 'password', nullable=False)
 
 def downgrade():
     ${downgrades if downgrades else "pass"}
