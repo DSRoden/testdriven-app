@@ -48,6 +48,7 @@ def add_user():
 		db.session.rollback()
 		return jsonify(response_object), 400
 
+
 @users_blueprint.route('/users/<user_id>', methods=['GET'])
 def get_single_user(user_id):
 		"""Get single user details"""
@@ -96,4 +97,3 @@ def index():
 		db.session.commit()
 	users = User.query.all()
 	return render_template('index.html', users=users)
-

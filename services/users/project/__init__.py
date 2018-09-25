@@ -13,6 +13,7 @@ toolbar = DebugToolbarExtension()
 migrate = Migrate()
 bcrypt = Bcrypt()
 
+
 def create_app(script_info=None):
 
 	# instantiate the app
