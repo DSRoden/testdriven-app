@@ -7,6 +7,7 @@ import { Route, Switch } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import Form from './components/Form';
 import Logout from './components/Logout';
+import UserStatus from './components/UserStatus';
 
 class App extends Component {
 	constructor() {
@@ -28,11 +29,13 @@ class App extends Component {
 		this.handleUserFormSubmit = this.handleUserFormSubmit.bind(this);
 		this.handleFormChange = this.handleFormChange.bind(this);
 		this.logoutUser = this.logoutUser.bind(this);
+		this.getUserStatus = this.getUserStatus.bind(this);
 	};
 
 	componentDidMount() {
-		// console.log('getting users');
+		console.log('getting users');
 		this.getUsers();
+		// this.getUserStatus();
 	};
 
 	getUsers() {
@@ -75,7 +78,6 @@ class App extends Component {
 		const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/auth/${formType}`;
 		axios.post(url, data)
 		.then((res) => {
-			console.log(res.data);
 			this.clearFormState();
 			window.localStorage.setItem('authToken', res.data.auth_token);
 			this.setState({ isAuthenticated: true });
@@ -105,10 +107,27 @@ class App extends Component {
 		this.setState({ isAuthenticated: false });
 	}
 
+
+	getUserStatus(event){
+		const options = {
+			url: `${process.env.REACT_APP_USERS_SERVICE_URL}/auth/status`,
+			method: 'get',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${window.localStorage.authToken}`
+			}
+		};
+		return axios(options)
+		.then((res) => { console.log(res.data.data) 
+			this.setState({ isAuthenticated: true})
+		})
+		.catch((err) => { console.log(err) })
+	};
+
 	render() {
 		return (
 			<div>
-				<NavBar title={this.state.title} />
+				<NavBar isAuthenticated={this.state.isAuthenticated} title={this.state.title} />
 				<section className="section">
 					<div className="container">
 						<div className="columns">
@@ -153,6 +172,11 @@ class App extends Component {
 											isAuthenticated={this.state.isAuthenticated}
 										/>
 									)} />
+									<Route exact path='/status' render={() => (
+										<UserStatus
+											isAuthenticated={this.state.isAuthenticated}
+										/>
+									)} />								
 								</Switch>
 							</div>
 						</div>
