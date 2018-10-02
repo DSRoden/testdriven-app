@@ -15,7 +15,7 @@ class App extends Component {
 			users: [],
 			username: '',
 			email: '',
-			title: 'TestDriven.io',
+			title: 'testdriven-app',
 			formData: {
 				username: '',
 				email: '',
@@ -31,10 +31,16 @@ class App extends Component {
 		this.getUserStatus = this.getUserStatus.bind(this);
 	};
 
+	componentWillMount() {
+		console.log('will mount')
+		if (window.localStorage.getItem('authToken')) {
+			this.setState({ isAuthenticated: true });
+		};
+	};
+
 	componentDidMount() {
 		console.log('getting users');
 		this.getUsers();
-		// this.getUserStatus();
 	};
 
 	getUsers() {
