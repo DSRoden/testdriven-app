@@ -1,0 +1,6 @@
+{
+	"name": "dsroden",
+	"devDependencies": {
+		"cypress": "^3.0.1"
+	}
+}
